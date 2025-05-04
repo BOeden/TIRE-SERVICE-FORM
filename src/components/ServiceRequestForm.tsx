@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Camera } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 // Add custom tooltip styles
 const tooltipStyles = {
@@ -49,6 +50,7 @@ interface ServiceRequestFormProps {
 }
 
 const ServiceRequestForm: React.FC<ServiceRequestFormProps> = ({ onSubmit }) => {
+  const router = useRouter();
   const [vehicleNumber, setVehicleNumber] = useState('');
   const [driverName, setDriverName] = useState('');
   const [soldierID, setSoldierID] = useState('');
@@ -64,8 +66,8 @@ const ServiceRequestForm: React.FC<ServiceRequestFormProps> = ({ onSubmit }) => 
   const serviceOptions = [
     { 
       id: 'repair', 
-      label: 'תיקון נקר',
-      tooltip: 'תיקון נקר כולל איתור הנקר, כולל הסרפה והחלפת שסתום'
+      label: 'תיקון תקר',
+      tooltip: 'תיקון תקר כולל איתור התקר, כולל הסרפה והחלפת שסתום'
     },
     { 
       id: 'replace', 
@@ -79,7 +81,7 @@ const ServiceRequestForm: React.FC<ServiceRequestFormProps> = ({ onSubmit }) => 
     },
     {
       id: 'fleet-service',
-      label: 'טיפול צי רכב',
+      label: 'החלפה/תיקון במנות',
       tooltip: 'החלפת מעל 25 צמיגים'
     }
   ];
@@ -89,6 +91,14 @@ const ServiceRequestForm: React.FC<ServiceRequestFormProps> = ({ onSubmit }) => 
       setSelectedTires(selectedTires.filter(id => id !== tireId));
     } else {
       setSelectedTires([...selectedTires, tireId]);
+    }
+  };
+
+  const handleServiceSelection = (serviceId: string) => {
+    if (serviceId === 'fleet-service') {
+      router.push('/batch-management');
+    } else {
+      setSelectedService(serviceId);
     }
   };
 
@@ -211,7 +221,7 @@ const ServiceRequestForm: React.FC<ServiceRequestFormProps> = ({ onSubmit }) => 
                       ? 'bg-gray-900 text-white shadow-md hover:bg-gray-800' 
                       : 'bg-gray-900 text-white shadow hover:bg-gray-800'
                   }`}
-                  onClick={() => setSelectedService(option.id)}
+                  onClick={() => handleServiceSelection(option.id)}
                   data-tooltip={option.tooltip}
                   onMouseEnter={(e) => {
                     const tooltip = document.createElement('div');
