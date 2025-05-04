@@ -32,7 +32,23 @@ const calculateTooltipPosition = (element: HTMLElement) => {
   };
 };
 
-const ServiceRequestForm = () => {
+interface ServiceRequestFormProps {
+  onSubmit: (formData: {
+    vehicleNumber: string;
+    driverName: string;
+    soldierID: string;
+    vehicleType: string;
+    phoneNumber: string;
+    unit: string;
+    mileage: string;
+    selectedService: string;
+    selectedTires: string[];
+    pkaNumber: string;
+    needsPartsReplacement: 'yes' | 'no' | 'unknown' | '';
+  }) => void;
+}
+
+const ServiceRequestForm: React.FC<ServiceRequestFormProps> = ({ onSubmit }) => {
   const [vehicleNumber, setVehicleNumber] = useState('');
   const [driverName, setDriverName] = useState('');
   const [soldierID, setSoldierID] = useState('');
@@ -60,6 +76,11 @@ const ServiceRequestForm = () => {
       id: 'rim-repair', 
       label: 'תיקון חישוק',
       tooltip: 'תיקון חישוק'
+    },
+    {
+      id: 'fleet-service',
+      label: 'טיפול צי רכב',
+      tooltip: 'החלפת מעל 25 צמיגים'
     }
   ];
 
@@ -71,8 +92,25 @@ const ServiceRequestForm = () => {
     }
   };
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSubmit({
+      vehicleNumber,
+      driverName,
+      soldierID,
+      vehicleType,
+      phoneNumber,
+      unit,
+      mileage,
+      selectedService,
+      selectedTires,
+      pkaNumber,
+      needsPartsReplacement
+    });
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50" dir="rtl">
+    <form onSubmit={handleSubmit} className="min-h-screen bg-gray-50" dir="rtl">
       <div className="max-w-3xl mx-auto p-4">
         <div className="bg-gray-900 text-white p-8 mb-6 rounded-lg shadow-md">
           <h1 className="text-3xl font-bold text-center">שירות אחזקת צמיגי רכב טקטי ומשא כבד לצה״ל</h1>
@@ -84,90 +122,84 @@ const ServiceRequestForm = () => {
 
         <div className="space-y-8 bg-white p-8 rounded-lg shadow-sm border border-gray-300">
           <div>
-            <Label htmlFor="vehicleNumber" className="text-gray-800 font-medium">מספר רכב</Label>
+            <Label htmlFor="vehicleNumber" className="text-gray-900 font-medium">מספר רכב</Label>
             <Input 
               id="vehicleNumber" 
               value={vehicleNumber}
               onChange={(e) => setVehicleNumber(e.target.value)}
               placeholder="הכנס/י מספר רכב"
-              className="mt-2 border-gray-400 focus:border-blue-500 placeholder:text-gray-500"
+              className="mt-2 border-gray-400 focus:border-blue-500 placeholder:text-gray-600 text-gray-900"
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="driverName" className="text-gray-800 font-medium">שם נהג</Label>
-              <Input 
-                id="driverName" 
-                value={driverName}
-                onChange={(e) => setDriverName(e.target.value)}
-                placeholder="שם הנהג"
-                className="mt-2 border-gray-400 focus:border-blue-500 placeholder:text-gray-500"
-              />
-            </div>
-            <div>
-              <Label htmlFor="soldierID" className="text-gray-800 font-medium">מספר אישי</Label>
-              <Input 
-                id="soldierID" 
-                value={soldierID}
-                onChange={(e) => setSoldierID(e.target.value)}
-                placeholder="הכנס/י מספר אישי"
-                className="mt-2 border-gray-400 focus:border-blue-500 placeholder:text-gray-500"
-                maxLength={7}
-                dir="ltr"
-              />
-            </div>
+          <div>
+            <Label htmlFor="driverName" className="text-gray-900 font-medium">שם נהג</Label>
+            <Input 
+              id="driverName" 
+              value={driverName}
+              onChange={(e) => setDriverName(e.target.value)}
+              placeholder="שם הנהג"
+              className="mt-2 border-gray-400 focus:border-blue-500 placeholder:text-gray-600 text-gray-900"
+            />
+          </div>
+          <div>
+            <Label htmlFor="soldierID" className="text-gray-900 font-medium">מספר אישי</Label>
+            <Input 
+              id="soldierID" 
+              value={soldierID}
+              onChange={(e) => setSoldierID(e.target.value)}
+              placeholder="הכנס/י מספר אישי"
+              className="mt-2 border-gray-400 focus:border-blue-500 placeholder:text-gray-600 text-gray-900"
+              maxLength={7}
+              dir="ltr"
+            />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="vehicleType" className="text-gray-800 font-medium">סוג רכב</Label>
-              <Input 
-                id="vehicleType" 
-                value={vehicleType}
-                onChange={(e) => setVehicleType(e.target.value)}
-                placeholder="סוג הרכב"
-                className="mt-2 border-gray-400 focus:border-blue-500 placeholder:text-gray-500"
-              />
-            </div>
-            <div>
-              <Label htmlFor="unit" className="text-gray-800 font-medium">יחידה</Label>
-              <Input 
-                id="unit" 
-                value={unit}
-                onChange={(e) => setUnit(e.target.value)}
-                placeholder="שם היחידה"
-                className="mt-2 border-gray-400 focus:border-blue-500 placeholder:text-gray-500"
-              />
-            </div>
+          <div>
+            <Label htmlFor="vehicleType" className="text-gray-900 font-medium">סוג רכב</Label>
+            <Input 
+              id="vehicleType" 
+              value={vehicleType}
+              onChange={(e) => setVehicleType(e.target.value)}
+              placeholder="סוג הרכב"
+              className="mt-2 border-gray-400 focus:border-blue-500 placeholder:text-gray-600 text-gray-900"
+            />
+          </div>
+          <div>
+            <Label htmlFor="unit" className="text-gray-900 font-medium">יחידה</Label>
+            <Input 
+              id="unit" 
+              value={unit}
+              onChange={(e) => setUnit(e.target.value)}
+              placeholder="שם היחידה"
+              className="mt-2 border-gray-400 focus:border-blue-500 placeholder:text-gray-600 text-gray-900"
+            />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="phoneNumber" className="text-gray-800 font-medium">טלפון</Label>
-              <Input 
-                id="phoneNumber" 
-                value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
-                placeholder="מספר טלפון"
-                className="mt-2 border-gray-400 focus:border-blue-500 placeholder:text-gray-500"
-                dir="ltr"
-              />
-            </div>
-            <div>
-              <Label htmlFor="mileage" className="text-gray-800 font-medium">ק"מ רכב</Label>
-              <Input 
-                id="mileage" 
-                value={mileage}
-                onChange={(e) => setMileage(e.target.value)}
-                placeholder="הכנס/י מד מרחק נוכחי"
-                className="mt-2 border-gray-400 focus:border-blue-500 placeholder:text-gray-500"
-              />
-            </div>
+          <div>
+            <Label htmlFor="phoneNumber" className="text-gray-900 font-medium">טלפון</Label>
+            <Input 
+              id="phoneNumber" 
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+              placeholder="מספר טלפון"
+              className="mt-2 border-gray-400 focus:border-blue-500 placeholder:text-gray-600 text-gray-900"
+              dir="ltr"
+            />
+          </div>
+          <div>
+            <Label htmlFor="mileage" className="text-gray-900 font-medium">ק"מ רכב</Label>
+            <Input 
+              id="mileage" 
+              value={mileage}
+              onChange={(e) => setMileage(e.target.value)}
+              placeholder="הכנס/י מד מרחק נוכחי"
+              className="mt-2 border-gray-400 focus:border-blue-500 placeholder:text-gray-600 text-gray-900"
+            />
           </div>
 
-          <div className="border-t border-gray-300 pt-6">
-            <Label className="text-gray-800 font-medium mb-2 block">יש לבחור את סוג הטיפול הנדרש:</Label>
+          <div>
+            <Label className="text-gray-900 font-medium mb-2 block">יש לבחור את סוג הטיפול הנדרש:</Label>
             <div className="flex flex-col gap-2">
               {serviceOptions.map((option) => (
                 <Button
@@ -236,7 +268,7 @@ const ServiceRequestForm = () => {
           
           {selectedService === 'rim-repair' && (
             <div className="border-t border-gray-300 pt-6">
-              <div className="text-gray-800 font-medium mb-4">האם התיקון כולל החלפת חלקים?</div>
+              <div className="text-gray-900 font-medium mb-4">האם התיקון כולל החלפת חלקים?</div>
               <div className="space-y-3">
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
@@ -247,7 +279,7 @@ const ServiceRequestForm = () => {
                     onChange={(e) => setNeedsPartsReplacement('yes')}
                     className="w-4 h-4 text-blue-600"
                   />
-                  <span className="text-gray-700">כן</span>
+                  <span className="text-gray-900">כן</span>
                 </label>
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
@@ -258,7 +290,7 @@ const ServiceRequestForm = () => {
                     onChange={(e) => setNeedsPartsReplacement('no')}
                     className="w-4 h-4 text-blue-600"
                   />
-                  <span className="text-gray-700">לא</span>
+                  <span className="text-gray-900">לא</span>
                 </label>
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
@@ -269,7 +301,7 @@ const ServiceRequestForm = () => {
                     onChange={(e) => setNeedsPartsReplacement('unknown')}
                     className="w-4 h-4 text-blue-600"
                   />
-                  <span className="text-gray-700">לא יודע/ת</span>
+                  <span className="text-gray-900">לא יודע/ת</span>
                 </label>
               </div>
 
@@ -299,15 +331,15 @@ const ServiceRequestForm = () => {
           )}
           
           <div className="border-t border-gray-300 pt-6">
-            <Label className="text-gray-800 font-medium mb-3 block">בחר/י את מיקום הצמיג:</Label>
+            <Label className="text-gray-900 font-medium mb-3 block">בחר/י את מיקום הצמיג:</Label>
             <div className="flex justify-center mb-4">
               <div className="w-full max-w-2xl border border-gray-400 rounded-lg bg-white p-8 shadow-sm">
                 <div className="relative h-80">
                   {/* קבינה */}
-                  <div className="absolute top-1 left-1/2 transform -translate-x-1/2 w-40 h-20 bg-gray-100 border-2 border-gray-500 rounded-t-lg"></div>
+                  <div className="absolute top-1 left-1/2 transform -translate-x-1/2 w-40 h-20 bg-gray-200 border-2 border-gray-500 rounded-t-lg"></div>
                   
                   {/* גוף המשאית */}
-                  <div className="absolute top-20 left-1/2 transform -translate-x-1/2 w-80 h-32 bg-gray-50 border-2 border-gray-500"></div>
+                  <div className="absolute top-20 left-1/2 transform -translate-x-1/2 w-80 h-32 bg-gray-200 border-2 border-gray-500"></div>
                   
                   {/* גלגלים קדמיים */}
                   <TireButton 
@@ -410,7 +442,7 @@ const ServiceRequestForm = () => {
           </div>
           
           <div className="border-t border-gray-300 pt-6">
-            <Label className="text-gray-800 font-medium mb-3 block">תמונות:</Label>
+            <Label className="text-gray-900 font-medium mb-3 block">תמונות:</Label>
             <div className="grid grid-cols-2 gap-3">
               <Button 
                 variant="outline" 
@@ -437,7 +469,7 @@ const ServiceRequestForm = () => {
           </Button>
         </div>
       </div>
-    </div>
+    </form>
   );
 };
 
